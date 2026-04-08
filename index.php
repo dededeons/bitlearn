@@ -17,7 +17,7 @@ $hide_navbar = true; // hide navbar for the auth page to look cleaner
 require_once 'components/header.php';
 ?>
 
-<div class="auth-wrapper">
+<div class="auth-wrapper" style="flex-direction:column;">
     <div class="glass-card auth-card">
         <div class="auth-header">
             <div class="login-logo-container" style="display:flex; justify-content:center; margin-bottom:1.5rem; padding: 1rem;">
@@ -73,10 +73,11 @@ require_once 'components/header.php';
                 Masuk <i class="uil uil-arrow-right"></i>
             </button>
         </form>
-
-        <div style="margin-top: 2rem; text-align:center; color:var(--text-muted); font-size:0.9rem;">
-            <p>Khusus akses Siswa:<br>Silakan tanyakan detail kredensial Anda kepada Guru Mata Pelajaran.</p>
-        </div>
+    </div>
+    
+    <div style="margin-top: 3rem; text-align:center; color:var(--text-muted); font-size:0.85rem;">
+        <p style="margin-bottom:0.3rem;"><span style="color:var(--text-main); font-weight:500;">BitLearn E-Learning</span> &copy; 2026 MTsN 11 Majalengka</p>
+        <p>Dikembangkan oleh <b style="color:var(--primary);">Dede Sudirman, S.Pd.</b></p>
     </div>
 </div>
 
