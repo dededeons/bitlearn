@@ -983,4 +983,13 @@ require_once '../components/header.php';
     </div>
 </div>
 
+<script>
+function toggleSidebar() {
+    var sidebar = document.getElementById('viewerSidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('open');
+}
+</script>
+
 <?php require_once '../components/footer.php'; ?>

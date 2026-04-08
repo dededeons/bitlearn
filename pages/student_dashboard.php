@@ -62,14 +62,14 @@ require_once '../components/header.php';
 
         <!-- Form Pendaftaran Mandiri dengan Kode -->
         <div
-            style="background:var(--surface); padding:1rem 1.5rem; border-radius:var(--radius-sm); border:1px solid var(--border); display:flex; gap:1rem; align-items:center;">
-            <div>
+            style="background:var(--surface); padding:1rem 1.5rem; border-radius:var(--radius-sm); border:1px solid var(--border); display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:center;">
+            <div style="text-align:left;">
                 <b style="font-size:0.9rem; display:block;">Punya Kode Pelajaran?</b>
                 <small style="color:var(--text-muted);">Gabung ke kelas dengan kode dari guru</small>
             </div>
-            <form action="../actions/enroll_code.php" method="POST" style="display:flex; gap:0.5rem; margin:0;">
+            <form action="../actions/enroll_code.php" method="POST" style="display:flex; flex-wrap:wrap; justify-content:center; gap:0.5rem; margin:0; width:100%; max-width:260px;">
                 <input type="text" name="enrollment_code" class="form-control" placeholder="Contoh: KODE123" required
-                    style="width:150px; padding:0.4rem 0.8rem;">
+                    style="flex:1; min-width:120px; padding:0.4rem 0.8rem;">
                 <button type="submit" class="btn btn-secondary" style="padding:0.4rem 1rem;"><i
                         class="uil uil-enter"></i> Gabung</button>
             </form>
