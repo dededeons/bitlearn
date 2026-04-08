@@ -1,10 +1,6 @@
 <?php
 require_once __DIR__ . '/core/config.php';
 
-// Block if already installed via lock file
-if (file_exists(__DIR__ . '/core/installed.lock')) {
-    die("Aplikasi sudah diinstall. Untuk menginstall ulang, hapus file core/installed.lock terlebih dahulu.");
-}
 
 // Security: Block if database is already fully configured and 'users' table exists
 if (isset($conn) && !$conn->connect_error && $conn->select_db($db_name)) {
@@ -77,9 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['install'])) {
                     $role = 'teacher';
 
                     $conn->query("INSERT INTO users (name, username, email, password, role) VALUES ('$name_clean', '$username_clean', $email_clean, '$password_hashed', '$role')");
-                    
-                    // Step 6: Create lock file
-                    file_put_contents(__DIR__ . '/core/installed.lock', 'Installed on ' . date('Y-m-d H:i:s'));
                     
                     $success = true;
                 }

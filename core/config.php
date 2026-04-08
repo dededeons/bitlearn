@@ -33,23 +33,26 @@ $is_install_script = (basename($_SERVER['PHP_SELF']) === 'install.php');
 // Create connection (silencing warnings so installer can handle errors gracefully)
 $conn = @new mysqli($db_host, $db_user, $db_pass);
 
-// Check if installation is complete
-if (!file_exists(__DIR__ . '/installed.lock')) {
+$db_valid = false;
+if (!$conn->connect_error && $conn->select_db($db_name)) {
+    // Additionally ensure our main table exists
+    $check_table = $conn->query("SHOW TABLES LIKE 'users'");
+    if ($check_table && $check_table->num_rows > 0) {
+        $db_valid = true;
+    }
+}
+
+// Redirect to install or gracefully die if db connection fails
+if (!$db_valid) {
     if (!$is_install_script) {
-        header("Location: " . BASE_URL . "/install.php");
-        exit;
+        if (file_exists(__DIR__ . '/../install.php')) {
+            header("Location: " . BASE_URL . "/install.php");
+            exit;
+        } else {
+            die("<div style='font-family:sans-serif; text-align:center; margin-top:50px;'>Kesalahan Server: Gagal terhubung ke database. Harap cek <b>core/config.php</b>.</div>");
+        }
     }
 } else {
-    // If installed.lock exists, the connection must be valid
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-    
-    // Select the database if it exists
-    if ($conn->select_db($db_name) === false) {
-        die("Fatal Error: Database specified in config.php does not exist although installation is marked complete. Please delete core/installed.lock and re-run installer.");
-    } else {
-        $conn->set_charset("utf8mb4");
-    }
+    $conn->set_charset("utf8mb4");
 }
 ?>
