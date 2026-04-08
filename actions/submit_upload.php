@@ -1,0 +1,48 @@
+<?php
+require_once '../core/config.php';
+$r = isset($_SESSION['user_role']) ? trim(strtolower((string)$_SESSION['user_role'])) : '';
+if (!isset($_SESSION['user_id']) || $r !== 'student') { header("Location: ../index.php"); exit; }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $assignment_id = (int)$_POST['assignment_id'];
+    $course_id = (int)$_POST['course_id']; // For routing back
+    $student_id = $_SESSION['user_id'];
+    
+    // Check if Assignment exists
+    $chka = $conn->query("SELECT id FROM assignments WHERE id = $assignment_id");
+    if($chka && $chka->num_rows > 0) {
+        if(isset($_FILES['assignment_file']) && $_FILES['assignment_file']['error'] === UPLOAD_ERR_OK) {
+            $allowed = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'zip', 'rar', 'png', 'jpg', 'jpeg'];
+            $filename = $_FILES['assignment_file']['name'];
+            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            
+            if (in_array($ext, $allowed)) {
+                $new_filename = 'ans_' . time() . '_' . rand(1000,9999) . '.' . $ext;
+                $upload_dir = '../uploads/';
+                if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+                
+                if (move_uploaded_file($_FILES['assignment_file']['tmp_name'], $upload_dir . $new_filename)) {
+                    $doc_path = $conn->real_escape_string($new_filename);
+                    
+                    // Insert into submissions
+                    $sql = "INSERT INTO submissions (assignment_id, student_id, file_path) VALUES ($assignment_id, $student_id, '$doc_path')";
+                    if($conn->query($sql) === TRUE){
+                        $_SESSION['success'] = "Berkas tugas berhasil diunggah dan diserahkan!";
+                    } else {
+                        $_SESSION['error'] = "Gagal merekam jawaban: " . $conn->error;
+                    }
+                } else {
+                    $_SESSION['error'] = 'Upload gagal pada sisi penyimpan server.';
+                }
+            } else {
+                $_SESSION['error'] = 'Format tidak sah. Gunakan PDF/DOCS.';
+            }
+        } else {
+            $_SESSION['error'] = 'File tiada atau rusak.';
+        }
+    }
+    
+    header("Location: ../pages/lesson_viewer.php?course_id=$course_id&assignment_id=$assignment_id"); exit;
+}
+header("Location: ../pages/student_dashboard.php"); exit;
+?>

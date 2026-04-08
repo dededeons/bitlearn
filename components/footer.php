@@ -1,0 +1,157 @@
+<?php
+if (strpos($_SERVER['REQUEST_URI'], 'footer.php') !== false)
+    die('Direct access not permitted');
+
+$is_teacher = (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'teacher');
+$hide_nav = (isset($hide_navbar) && $hide_navbar);
+?>
+<?php if (!$hide_nav && $is_teacher): ?>
+    <footer class="footer"
+        style="margin-top:auto; padding-top:2rem; padding-bottom:2rem; border-top:1px solid rgba(255,255,255,0.05); text-align:center;">
+        <div style="font-size:0.85rem; line-height:1.6; color:var(--text-muted);">
+            <p style="margin-bottom:0.4rem; font-weight:500;"><span style="color:var(--text-main);">BitLearn
+                    E-Learning</span> &copy; 2026 <b style="color:var(--text-main);">MTsN 11 Majalengka</b></p>
+            <p>Dikembangkan secara khusus oleh <b style="color:var(--primary);">Dede Sudirman, S.Pd.</b> (Guru
+                Informatika)<br>
+        </div>
+    </footer>
+    </main> <!-- end .app-main -->
+    </div> <!-- end .app-wrapper -->
+<?php else: ?>
+    <?php if (!$hide_nav): ?>
+        <footer class="footer"
+            style="padding-top:2rem; padding-bottom:2rem; border-top:1px solid rgba(255,255,255,0.05); text-align:center;">
+            <div class="container" style="font-size:0.85rem; line-height:1.6; color:var(--text-muted);">
+                <p style="margin-bottom:0.4rem; font-weight:500;"><span style="color:var(--text-main);">BitLearn
+                        E-Learning</span> &copy; 2026 <b style="color:var(--text-main);">MTsN 11 Majalengka</b></p>
+                <p>Dikembangkan secara khusus oleh <b style="color:var(--primary);">Dede Sudirman, S.Pd.</b> (Guru
+                    Informatika)<br>
+            </div>
+        </footer>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php if(isset($swal_success) && $swal_success !== ''): ?>
+<script>
+    Swal.fire({
+        title: 'Selesai!',
+        html: '<?php echo addslashes($swal_success); ?>',
+        icon: 'success',
+        confirmButtonColor: 'var(--secondary)',
+        confirmButtonText: 'OK',
+        background: 'var(--surface)'
+    });
+</script>
+<?php endif; ?>
+
+<?php if(isset($swal_error) && $swal_error !== ''): ?>
+<script>
+    Swal.fire({
+        title: 'Gagal!',
+        html: '<?php echo addslashes($swal_error); ?>',
+        icon: 'error',
+        confirmButtonColor: 'var(--danger)',
+        confirmButtonText: 'Tutup',
+        background: 'var(--surface)'
+    });
+</script>
+<?php endif; ?>
+
+<script>
+// Intercept forms requiring confirmation
+document.querySelectorAll('form[data-confirm]').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const msg = this.getAttribute('data-confirm');
+        Swal.fire({
+            title: 'Peringatan!',
+            text: msg,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--danger)',
+            cancelButtonColor: 'var(--border)',
+            confirmButtonText: 'Ya, Lanjutkan',
+            cancelButtonText: 'Batal',
+            background: 'var(--surface)',
+            color: 'var(--text-main)'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit();
+            }
+        });
+    });
+});
+</script>
+<!-- File Preview Modal (Global) -->
+<div id="filePreviewModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9); backdrop-filter:blur(15px); color:white; animation: fadeIn 0.3s ease-out;">
+    <div style="position:relative; width:95%; height:92%; margin:1.5% auto; background:var(--surface); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; display:flex; flex-direction:column; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
+        <div style="padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.03);">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="background:var(--primary); width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+                    <i class="uil uil-eye" style="font-size:1.2rem;"></i>
+                </div>
+                <h4 id="previewTitle" style="margin:0; font-size:1.1rem; font-weight:600;">Pratinjau Berkas</h4>
+            </div>
+            <button onclick="closePreview()" style="background:rgba(255,255,255,0.05); border:none; color:var(--text-main); cursor:pointer; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all 0.2s;">
+                <i class="uil uil-multiply" style="font-size:1.4rem;"></i>
+            </button>
+        </div>
+        <div id="previewContent" style="flex-grow:1; background:#0c0c0c; display:flex; align-items:center; justify-content:center; overflow:auto;">
+             <!-- Content injected here -->
+        </div>
+        <div style="padding:0.8rem 1.5rem; background:rgba(0,0,0,0.2); border-top:1px solid var(--border); text-align:right;">
+             <small style="color:var(--text-muted);">Tekan <kbd style="background:#444; padding:2px 5px; border-radius:4px; color:white;">ESC</kbd> untuk menutup</small>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPreview(url, title) {
+    const modal = document.getElementById('filePreviewModal');
+    const content = document.getElementById('previewContent');
+    document.getElementById('previewTitle').innerText = title || "Pratinjau Berkas";
+    
+    content.innerHTML = '<div style="color:var(--text-muted); display:flex; flex-direction:column; align-items:center; gap:15px;"><div class="spinner"></div><span>Sedang memuat dokumen...</span></div>';
+    modal.style.display = 'block';
+    
+    // Auto-detect extension
+    const ext = url.split('.').pop().toLowerCase();
+    
+    setTimeout(() => {
+        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+            content.innerHTML = `<img src="${url}" style="max-width:98%; max-height:98%; object-fit:contain; border-radius:var(--radius-sm); box-shadow:0 20px 40px rgba(0,0,0,0.8);">`;
+        } else if (ext === 'pdf') {
+            content.innerHTML = `<iframe src="${url}#toolbar=0" style="width:100%; height:100%; border:none;"></iframe>`;
+        } else {
+            content.innerHTML = `<div style="text-align:center; padding:3rem; max-width:400px; background:var(--surface); border-radius:var(--radius); border:1px solid var(--border);">
+                <i class="uil uil-file-info-alt" style="font-size:5rem; color:var(--warning); margin-bottom:1.5rem; display:block;"></i>
+                <h3 style="margin-bottom:1rem;">Tipe file tidak didukung untuk pratinjau</h3>
+                <p style="color:var(--text-muted); margin-bottom:2rem; font-size:0.9rem;">Pratinjau hanya tersedia untuk format PDF dan Gambar. Silakan unduh file secara manual.</p>
+                <div style="display:flex; gap:1rem; justify-content:center;">
+                    <button onclick="closePreview()" class="btn btn-secondary btn-sm">Tutup</button>
+                    <a href="${url}" download class="btn btn-primary btn-sm"><i class="uil uil-cloud-download"></i> Unduh File</a>
+                </div>
+            </div>`;
+        }
+    }, 400);
+}
+
+function closePreview() {
+    document.getElementById('filePreviewModal').style.display = 'none';
+    document.getElementById('previewContent').innerHTML = '';
+}
+
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closePreview();
+});
+</script>
+
+<style>
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+</body>
+
+</html>

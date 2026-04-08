@@ -1,0 +1,123 @@
+<?php
+// Prevent direct access to header
+if(strpos($_SERVER['REQUEST_URI'], 'header.php') !== false) die('Akses langsung tidak diizinkan');
+
+$is_teacher = (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'teacher');
+
+// Intercept Alerts for SweetAlert Globally
+$swal_success = '';
+$swal_error = '';
+if(isset($_SESSION['success'])) {
+    $swal_success = $_SESSION['success'];
+    unset($_SESSION['success']); // Prevent inline HTML alerts from rendering
+}
+if(isset($_SESSION['error'])) {
+    $swal_error = $_SESSION['error'];
+    unset($_SESSION['error']);
+}
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo isset($page_title) ? htmlspecialchars($page_title) . ' - BitLearn' : 'BitLearn | E-Learning Modern'; ?></title>
+    <!-- We prefer to use Vanilla CSS to match our premium design standard -->
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/style.css">
+    <!-- Unicons for beautiful modern icons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-popup { font-family: 'Outfit', sans-serif !important; border-radius: var(--radius) !important; }
+        .swal2-title { color: var(--text-main) !important; }
+        .swal2-html-container { color: var(--text-muted) !important; }
+        .swal2-confirm { border-radius: var(--radius-sm) !important; padding: 0.75rem 1.5rem !important; }
+    </style>
+</head>
+<body class="bg-gradient-mesh">
+
+<?php if(isset($hide_navbar) && $hide_navbar): ?>
+    <!-- Mode Tanpa Navigasi (Untuk Ujian / Viewer Imersif) -->
+<?php else: ?>
+    
+    <?php if($is_teacher): ?>
+        <!-- Teacher Sidebar Layout -->
+        <div class="app-wrapper">
+            <!-- Sidebar Kiri -->
+            <aside class="app-sidebar">
+                <div class="sidebar-header" style="justify-content:center; display:flex; padding:2rem 0 1rem 0;">
+                    <a href="<?php echo BASE_URL; ?>" style="display:block;">
+                        <img src="<?php echo BASE_URL; ?>/assets/logo.png" alt="BitLearn Logo" style="height:auto; width:160px; max-width:100%; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+                    </a>
+                </div>
+                <nav class="sidebar-nav">
+                    <!-- Penanda URL Aktif Sederhana -->
+                    <?php $cur = $_SERVER['REQUEST_URI']; ?>
+                    <a href="<?php echo BASE_URL; ?>/pages/teacher_dashboard.php" class="sidebar-link <?php echo strpos($cur, 'teacher_dashboard') ? 'active' : ''; ?>">
+                        <i class="uil uil-estate"></i> Beranda
+                    </a>
+                    <a href="<?php echo BASE_URL; ?>/pages/manage_classes.php" class="sidebar-link <?php echo strpos($cur, 'manage_classes') ? 'active' : ''; ?>">
+                        <i class="uil uil-building"></i> Manajemen Rombel
+                    </a>
+                    <a href="<?php echo BASE_URL; ?>/pages/manage_students.php" class="sidebar-link <?php echo strpos($cur, 'manage_students') ? 'active' : ''; ?>">
+                        <i class="uil uil-users-alt"></i> Manajemen Siswa
+                    </a>
+                    <a href="<?php echo BASE_URL; ?>/pages/manage_courses.php" class="sidebar-link <?php echo strpos($cur, 'manage_courses') || strpos($cur, 'course_view') || strpos($cur, 'add_') ? 'active' : ''; ?>">
+                        <i class="uil uil-books"></i> Manajemen Course
+                    </a>
+                    <a href="<?php echo BASE_URL; ?>/pages/teacher_grading.php" class="sidebar-link <?php echo strpos($cur, 'teacher_grading') ? 'active' : ''; ?>">
+                        <i class="uil uil-award"></i> Penilaian
+                    </a>
+                </nav>
+                <div style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); background:rgba(0,0,0,0.1);">
+                    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+                        <?php $prof_pic = isset($_SESSION['profile_pic']) && !empty($_SESSION['profile_pic']) ? BASE_URL . '/uploads/' . $_SESSION['profile_pic'] : null; ?>
+                        <?php if($prof_pic): ?>
+                            <img src="<?php echo htmlspecialchars($prof_pic); ?>" alt="Avatar" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                        <?php else: ?>
+                            <div style="width:45px; height:45px; border-radius:50%; background:var(--surface); display:flex; align-items:center; justify-content:center; border:2px solid var(--primary); font-size:1.5rem; color:var(--text-muted);">
+                                <i class="uil uil-user"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div style="flex:1; overflow:hidden;">
+                            <div style="font-size:0.95rem; font-weight:600; color:var(--text-main); white-space:nowrap; text-overflow:ellipsis; overflow:hidden;"><?php echo htmlspecialchars($_SESSION['user_name']); ?></div>
+                            <div style="font-size:0.75rem; color:var(--text-muted);">Akun Guru</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; gap:0.5rem;">
+                        <a href="<?php echo BASE_URL; ?>/pages/edit_profile.php" class="btn btn-secondary" style="flex:1; padding:0.5rem; font-size:0.85rem;" title="Pengaturan Profil"><i class="uil uil-user-circle"></i> Profil</a>
+                        <a href="<?php echo BASE_URL; ?>/actions/logout.php" class="btn btn-danger" style="flex:0 0 auto; padding:0.5rem 0.8rem;" title="Keluar"><i class="uil uil-sign-out-alt"></i></a>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Konten Utama Kanan -->
+            <main class="app-main">
+                <!-- Top Nav Sederhana -->
+                <header class="top-nav">
+                    <div style="flex:1;">
+                        <span style="color:var(--text-muted); font-size:0.9rem;">
+                            <i class="uil uil-calender"></i> <?php echo date('d M Y'); ?>
+                        </span>
+                    </div>
+                </header>
+    <?php else: ?>
+        <!-- Student & Guest Navbar (Original layout) -->
+        <nav class="navbar" style="align-items:center;">
+            <a href="<?php echo BASE_URL; ?>" class="navbar-brand" style="line-height:1.2; font-size:1.4rem;">
+                Bit<span style="color:var(--text-main);">Learn</span><br>
+                <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted); letter-spacing:0.5px;">MTsN 11 Majalengka</span>
+            </a>
+            <div class="navbar-links">
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <a href="<?php echo BASE_URL; ?>/pages/student_dashboard.php"><i class="uil uil-book-reader"></i> Area Belajar Saya</a>
+                    <a href="<?php echo BASE_URL; ?>/actions/logout.php" class="btn btn-secondary" style="margin-left:1.5rem;"><i class="uil uil-sign-out-alt"></i> Keluar</a>
+                <?php else: ?>
+                    <a href="<?php echo BASE_URL; ?>">Masuk</a>
+                <?php endif; ?>
+            </div>
+        </nav>
+    <?php endif; ?>
+<?php endif; ?>
