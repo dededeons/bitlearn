@@ -7,14 +7,6 @@ $db_user = 'root'; // default xampp user
 $db_pass = '';     // default xampp pass is empty
 $db_name = 'bitlearn_db';
 
-// Create connection
-$conn = new mysqli($db_host, $db_user, $db_pass);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Dynamically determine BASE_URL
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
@@ -36,13 +28,23 @@ if (strpos($app_dir, $doc_root) === false && isset($_SERVER['SCRIPT_NAME'])) {
 
 define('BASE_URL', $protocol . '://' . $host . $base_path);
 
+$is_install_script = (basename($_SERVER['PHP_SELF']) === 'install.php');
+
+// Create connection (silencing warnings so installer can handle errors gracefully)
+$conn = @new mysqli($db_host, $db_user, $db_pass);
+
 // Check if installation is complete
 if (!file_exists(__DIR__ . '/installed.lock')) {
-    if (basename($_SERVER['PHP_SELF']) !== 'install.php') {
+    if (!$is_install_script) {
         header("Location: " . BASE_URL . "/install.php");
         exit;
     }
 } else {
+    // If installed.lock exists, the connection must be valid
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    
     // Select the database if it exists
     if ($conn->select_db($db_name) === false) {
         die("Fatal Error: Database specified in config.php does not exist although installation is marked complete. Please delete core/installed.lock and re-run installer.");

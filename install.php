@@ -1,9 +1,17 @@
 <?php
-session_start();
+require_once __DIR__ . '/core/config.php';
 
-// Block if already installed
+// Block if already installed via lock file
 if (file_exists(__DIR__ . '/core/installed.lock')) {
     die("Aplikasi sudah diinstall. Untuk menginstall ulang, hapus file core/installed.lock terlebih dahulu.");
+}
+
+// Security: Block if database is already fully configured and 'users' table exists
+if (isset($conn) && !$conn->connect_error && $conn->select_db($db_name)) {
+    $result = $conn->query("SHOW TABLES LIKE 'users'");
+    if ($result && $result->num_rows > 0) {
+        die("Akses Ditolak: Database sudah terhubung dan aplikasi BitLearn sudah terinstal secara sah. Harap hapus file install.php demi keamanan data Anda.");
+    }
 }
 
 $error = '';
