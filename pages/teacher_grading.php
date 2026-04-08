@@ -3,9 +3,9 @@ require_once '../core/config.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'teacher') { header("Location: ../index.php"); exit; }
 
 $teacher_id = $_SESSION['user_id'];
-$query = "SELECT s.id as sub_id, s.file_path, s.grade, s.submitted_at, s.feedback, u.name as st_name, a.title as assign_title, c.title as course_title 
+$query = "SELECT s.id as sub_id, s.file_path, s.grade, s.created_at as submitted_at, s.feedback, u.name as st_name, a.title as assign_title, c.title as course_title 
           FROM submissions s JOIN assignments a ON s.assignment_id = a.id JOIN courses c ON a.course_id = c.id JOIN users u ON s.student_id = u.id 
-          WHERE c.teacher_id = $teacher_id ORDER BY s.submitted_at DESC";
+          WHERE c.teacher_id = $teacher_id ORDER BY s.created_at DESC";
 $subs = $conn->query($query);
 
 $page_title = 'Portal Nilai';

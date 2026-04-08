@@ -319,7 +319,7 @@ require_once '../components/header.php';
                                     style="font-size:4rem; color:var(--secondary); margin-bottom:1rem;"></i>
                                 <h3 style="color:var(--secondary); margin-bottom:0.5rem;">Tugas Sudah Dikumpulkan!</h3>
                                 <p style="color:var(--text-muted); margin-bottom:1.5rem;">Waktu kumpul:
-                                    <?php echo date('d M Y, H:i', strtotime($existing_submission['submitted_at'])); ?>
+                                    <?php echo date('d M Y, H:i', strtotime($existing_submission['created_at'])); ?>
                                 </p>
                                 <div style="display:flex; gap:0.8rem; margin-bottom:1.5rem;">
                                     <a href="<?php echo BASE_URL . '/uploads/' . htmlspecialchars($existing_submission['file_path']); ?>"

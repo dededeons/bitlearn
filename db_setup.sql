@@ -109,6 +109,7 @@ CREATE TABLE IF NOT EXISTS submissions (
     student_id INT,
     file_path VARCHAR(255),
     grade FLOAT DEFAULT NULL,
+    feedback TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (assignment_id) REFERENCES assignments(id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
