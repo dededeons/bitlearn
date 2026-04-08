@@ -104,18 +104,23 @@ if(isset($_SESSION['error'])) {
                     </div>
                 </header>
     <?php else: ?>
-        <!-- Student & Guest Navbar (Original layout) -->
+        <!-- Student & Guest Navbar -->
         <nav class="navbar" style="align-items:center;">
-            <a href="<?php echo BASE_URL; ?>" class="navbar-brand" style="line-height:1.2; font-size:1.4rem;">
-                Bit<span style="color:var(--text-main);">Learn</span><br>
-                <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted); letter-spacing:0.5px;">MTsN 11 Majalengka</span>
-            </a>
-            <div class="navbar-links">
+            <div class="navbar-header-mobile" style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
+                <a href="<?php echo BASE_URL; ?>" class="navbar-brand" style="line-height:1.2; font-size:1.4rem;">
+                    Bit<span style="color:var(--text-main);">Learn</span><br>
+                    <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted); letter-spacing:0.5px;">MTsN 11 Majalengka</span>
+                </a>
+                <button class="student-menu-toggle" id="studentMenuToggle" style="display:none;" title="Toggle Menu">
+                    <i class="uil uil-bars"></i>
+                </button>
+            </div>
+            <div class="navbar-links" id="studentNavbarLinks">
                 <?php if(isset($_SESSION['user_id'])): ?>
-                    <a href="<?php echo BASE_URL; ?>/pages/student_dashboard.php"><i class="uil uil-book-reader"></i> Area Belajar Saya</a>
-                    <a href="<?php echo BASE_URL; ?>/actions/logout.php" class="btn btn-secondary" style="margin-left:1.5rem;"><i class="uil uil-sign-out-alt"></i> Keluar</a>
+                    <a href="<?php echo BASE_URL; ?>/pages/student_dashboard.php" class="btn btn-primary" style="margin-left:0; font-weight:500;"><i class="uil uil-book-reader"></i> Area Belajar</a>
+                    <a href="<?php echo BASE_URL; ?>/actions/logout.php" class="btn btn-danger" style="margin-left:1.5rem;"><i class="uil uil-sign-out-alt"></i> Keluar</a>
                 <?php else: ?>
-                    <a href="<?php echo BASE_URL; ?>">Masuk</a>
+                    <a href="<?php echo BASE_URL; ?>" class="btn btn-primary">Masuk Portal</a>
                 <?php endif; ?>
             </div>
         </nav>

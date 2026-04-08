@@ -106,6 +106,20 @@ document.querySelectorAll('form[data-confirm]').forEach(form => {
 </div>
 
 <script>
+const studentMenuToggle = document.getElementById('studentMenuToggle');
+if (studentMenuToggle) {
+    studentMenuToggle.addEventListener('click', () => {
+        document.getElementById('studentNavbarLinks').classList.toggle('active');
+        studentMenuToggle.classList.toggle('active');
+        // ganti icon silang atau hamburger jika bisa, biarkan saja sbg bars tapi active style
+        if(document.getElementById('studentNavbarLinks').classList.contains('active')){
+           studentMenuToggle.innerHTML = '<i class="uil uil-multiply"></i>';
+        } else {
+           studentMenuToggle.innerHTML = '<i class="uil uil-bars"></i>';
+        }
+    });
+}
+
 function openPreview(url, title) {
     const modal = document.getElementById('filePreviewModal');
     const content = document.getElementById('previewContent');
