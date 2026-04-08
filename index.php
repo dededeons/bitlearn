@@ -20,8 +20,8 @@ require_once 'components/header.php';
 <div class="auth-wrapper">
     <div class="glass-card auth-card">
         <div class="auth-header">
-            <div style="display:flex; justify-content:center; margin-bottom:1.5rem; padding: 1rem;">
-                <img src="<?php echo BASE_URL; ?>/assets/logo.png" alt="BitLearn Logo"
+            <div class="login-logo-container" style="display:flex; justify-content:center; margin-bottom:1.5rem; padding: 1rem;">
+                <img src="<?php echo BASE_URL; ?>/assets/logo.png" alt="BitLearn Logo" class="login-logo"
                     style="height:auto; width:220px; max-width:100%; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); transform: scale(1.1);">
             </div>
             <h1>Selamat Datang</h1>

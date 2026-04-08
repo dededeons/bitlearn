@@ -397,6 +397,9 @@ body {
     
     .container { padding: 0 1rem; }
     .glass-card { padding: 1.5rem; }
+    .auth-wrapper { padding: 1rem; min-height: 100dvh; align-items: center; }
+    .login-logo-container { margin-bottom: 0.5rem !important; padding: 0 !important; }
+    .login-logo { width: 170px !important; transform: scale(1) !important; }
 
     /* Forms */
     .form-control { font-size: 16px; /* Mencegah zoom iOS */ }
