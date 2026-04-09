@@ -139,7 +139,7 @@ require_once '../components/header.php';
             unset($_SESSION['error']); ?>
         </div><?php endif; ?>
 
-    <div class="grid" style="grid-template-columns: 1fr 300px; gap:2rem;">
+    <div class="grid course-layout-grid">
         <!-- Area Kurikulum (Modul & Materi) -->
         <div>
             <!-- Assignments List First -->
